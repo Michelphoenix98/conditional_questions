@@ -1,8 +1,17 @@
+///A dynamic questionnaire/survey handling  package.
 library conditional_questions;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+///A class that represents a standard question and an answer
+/// that is not restricted to a set of options.
+///
+/// It accepts the parameters [question], which is of type [String],
+/// [parent] which is of type Map<Question,String> that is used to denote
+/// the state of its parent Question, if any.
+/// The [validate] parameter accepts a function to perform validation on the
+/// answer provided to the question.
 class Question {
   Question({this.question, this.parent, this.validate})
       : assert(question != null);
@@ -22,6 +31,16 @@ class Question {
   }
 }
 
+///A class that represents a Closed-Ended question.
+///
+/// It accepts the parameters [question], which is of type [String],
+/// [parent] which is of type Map<Question,String> that is used to denote
+/// the state of its parent Question, if any.
+/// The [answer] parameter specifies the list of options to choose from and the not the actual answer
+/// selected by the user.
+/// The [isMandatory] parameter is used to specify if the question cannot be left
+/// unanswered.
+///
 class PolarQuestion extends Question {
   PolarQuestion(
       {this.question,
@@ -43,6 +62,20 @@ class PolarQuestion extends Question {
   bool hasError = false;
 }
 
+///A class that represents a Closed-Ended question which
+///mainly implements conditional questions.
+///
+/// It accepts the parameters [question], which is of type [String],
+/// [parent] which is of type Map<Question,String> that is used to denote
+/// the state of its parent Question, if any.
+/// The [answer] parameter specifies the list of options to choose from and the not the actual answer
+/// selected by the user.
+/// The [isMandatory] parameter is used to specify if the question cannot be left
+/// unanswered.
+///What makes this class different from its parent class [PolarQuestion]
+///is that an instance of the [NestedQuestion] class has a [children] property which houses a list of
+///questions that follow, based on the choice made.
+///The [children] property can also contain instances of [NestedQuestion].
 class NestedQuestion extends PolarQuestion {
   NestedQuestion(
       {question,
@@ -66,9 +99,16 @@ class NestedQuestion extends PolarQuestion {
   bool hasError = false;
 }
 
+///A class to create and manage the state of the questions.
+///
+/// accepts a parameter of type List<Question>, which is a list of [Question] objects
+/// that specifies the structure of the questionnaire.
+/// The class handles the state by maintaining a Stream.
 class DynamicMCQ {
+  ///This method returns a Map<String,String> object of the
+  ///current state of the question cards.
+  ///This format is useful for writing to a database eg Firestore.
   Map<String, dynamic> toMap() {
-    //print(element.keys.toList()[0].answer);
     Map<String, dynamic> temp = new Map<String, dynamic>();
     expanded.forEach((element) {
       String answer = (!(element.keys.toList()[0] is NestedQuestion ||
@@ -80,8 +120,13 @@ class DynamicMCQ {
     return temp;
   }
 
+  ///This method is used to set the state of the cards containing the questions and answers.
+  ///
+  /// It accepts a parameter [doc] of type Map<String,String> which essentially contains
+  /// an unordered list of question:answer key:value pairs typically fetched from a database.
+  /// This method sets the state and arranges the questions according to the order
+  /// specified by the [_questionStructure] variable.
   void setState(Map<String, dynamic> doc) {
-    // List<Map<Question, String>> temp = [];
     this.resetState();
     for (int i = 0; i < expanded.length; i++) {
       doc.keys.forEach((field) {
@@ -91,12 +136,7 @@ class DynamicMCQ {
               expanded[i].keys.toList()[0] is PolarQuestion))
             expanded[i].keys.toList()[0].answer.text = doc[field];
 
-          //temp2[element.keys.toList()[0]] = doc[field];
           this._onEvent(expanded[i], doc[field]);
-          // temp.add(temp2);
-
-          //if nested then
-          //temp.add(new Map<Question, dynamic>());
         }
       });
     }
@@ -106,25 +146,28 @@ class DynamicMCQ {
     _stream.close();
   }
 
+  ///The resetState() method is, as its name implies,
+  ///used to revert the states of all the cards back to its
+  ///default state(null).
   void resetState() {
     expanded.clear();
-    expanded = _questions.map((e) {
+    expanded = _questionStructure.map((e) {
       Map<Question, String> temp = new Map<Question, String>();
       if (!(e is NestedQuestion || e is PolarQuestion))
         e.answer = new TextEditingController();
       temp[e] = null;
-      // print(temp.keys);
+
       return temp;
     }).toList();
-    // print("expanded in constructor $expanded");
+
     _stream.sink.add(expanded);
   }
 
   final _stream = StreamController<List<Map<Question, String>>>();
-  List<Question> _questions;
+  List<Question> _questionStructure;
   List<Map<Question, String>> expanded;
-  DynamicMCQ(this._questions) {
-    expanded = _questions.map((e) {
+  DynamicMCQ(this._questionStructure) {
+    expanded = _questionStructure.map((e) {
       Map<Question, String> temp = new Map<Question, String>();
       if (!(e is NestedQuestion || e is PolarQuestion))
         e.answer = new TextEditingController();
@@ -132,13 +175,19 @@ class DynamicMCQ {
       print(temp.keys);
       return temp;
     }).toList();
-    // print("expanded in constructor $expanded");
+
     _stream.sink.add(expanded);
   }
   Stream<List<Map<Question, String>>> get stream => _stream.stream;
-  // Stream<List<Map<Question, String>>> get _stream.stream;
+
+  ///This private method is used to used to set the answers or states of the question cards as
+  ///and when the user taps on the choices.
+  ///
+  ///If there are instances of [NestedQuestion]
+  ///its children will be expanded or unpacked based on the [answer].
+  ///The parameter [questionState] contains the old state of the question.
+  ///The [answer] parameter contains the new answer selected by the user.
   void _onEvent(Map<Question, String> questionState, String answer) {
-    //print("in onEvent: ${expanded}");
     int location = 0;
     if ((location = expanded.indexOf(questionState)) != -1) {
       expanded[location][questionState.keys.toList()[0]] = answer;
@@ -150,17 +199,13 @@ class DynamicMCQ {
         if (((questionState.keys.toList()[0] as NestedQuestion).children) !=
                 null &&
             questionState[questionState.keys.toList()[0]] != null) {
-          //  print("Expanding nested question...");
           (questionState.keys.toList()[0] as NestedQuestion)
               .children
               .forEach((key, value) {
             if (key != answer) {
-              //     print("ENTERING NO...");
               int count =
                   location + 1; //location value points after nested question
               value.forEach((element) {
-                //  print(element.question);
-                //  print(count);
                 if (count < expanded.length &&
                         expanded[count].containsKey(element) ||
                     count < expanded.length &&
@@ -169,7 +214,6 @@ class DynamicMCQ {
                             .toList()[0]
                             .parent
                             .containsKey(questionState.keys.toList()[0])) {
-                  // print("deleting..$count");
                   expanded.removeAt(count);
                 }
               });
@@ -182,7 +226,6 @@ class DynamicMCQ {
                     .toList()[0]
                     .parent
                     .containsKey(questionState.keys.toList()[0])) {
-              //  print("deleting..${location + 1}");
               expanded.removeAt(location + 1);
             }
           }
@@ -200,10 +243,8 @@ class DynamicMCQ {
                 if (!(element is NestedQuestion || element is PolarQuestion))
                   element.answer = new TextEditingController();
                 temp[element] = null;
-                // print("Check this->${element.question} & ${element.answer}");
-                // print("temp is $temp");
+
                 expanded.insert(count++, temp);
-                //print(expanded);
               });
             }
           });
@@ -213,6 +254,12 @@ class DynamicMCQ {
     _stream.sink.add(expanded);
   }
 
+  ///This function is used to validate the question cards.
+  ///
+  /// Instances of [PolarQuestion] and [NestedQuestion] that have the [isMandatory]
+  /// flag set will be checked if they are equal to null or not.
+  /// Instances of [Question] having the validate property set to a function
+  /// will execute that function.
   bool validate() {
     int count = 0;
 
@@ -255,6 +302,10 @@ class DynamicMCQ {
       return true;
   }
 
+  ///This function returns a widget corresponding to a particular question passed as the
+  ///argument to it.
+  ///
+  /// The [data] parameter contains the state of a particular question.
   Widget getCard(BuildContext context, Map<dynamic, dynamic> data) {
     return GestureDetector(
       onTap: () {
@@ -286,7 +337,7 @@ class DynamicMCQ {
                                 ((data.keys.toList()[0]) is PolarQuestion &&
                                     data.keys.toList()[0].isMandatory)
                             ? [
-                                //check condition before applying star ... start here!
+                                //check condition before applying star
                                 TextSpan(
                                     text: "*",
                                     style: TextStyle(color: Colors.red))
@@ -342,7 +393,7 @@ class DynamicMCQ {
                                             )
                                           : Container(),
                                     ],
-                                  ), //needs fixing and state management of TextEditingControllers
+                                  ),
                                 )
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,22 +409,6 @@ class DynamicMCQ {
                                           data: data,
                                           parent: this,
                                         );
-                                        /*  return  Row(
-                                          //try wrapping this in a stateless/stateful widget with as a validator
-                                          children: [
-                                            Radio(
-                                              value: answer,
-                                              groupValue:
-                                                  data[data.keys.toList()[0]],
-                                              onChanged: (value) {
-                                                print(value);
-
-                                                this._onEvent(data, value);
-                                              },
-                                            ),
-                                            Text(answer),
-                                          ],
-                                        );*/
                                       }).toList(),
                                     ),
                                     Padding(
@@ -404,6 +439,10 @@ class DynamicMCQ {
   }
 }
 
+///A class that is used to represent the list of answers supplied to instances
+///of [NestedQuestion] and/or [PolarQuestion]
+///
+/// It returns a Radio Button representing an answer that is passed as an argument to it.
 class CustomRadioButton extends StatelessWidget {
   final answer;
   final data;
@@ -414,7 +453,6 @@ class CustomRadioButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      //try wrapping this in a stateless/stateful widget with as a validator
       children: [
         Radio(
           value: answer,

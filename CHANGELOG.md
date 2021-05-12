@@ -5,3 +5,7 @@
 ## [0.0.2] - 2021-12-05
 
 * Minor changes to the documentation.
+
+## [0.0.3] - 2021-12-05
+
+* Removed unused code to pass static analysis.

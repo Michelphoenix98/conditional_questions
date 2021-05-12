@@ -131,7 +131,6 @@ class DynamicMCQ {
     for (int i = 0; i < expanded.length; i++) {
       doc.keys.forEach((field) {
         if (expanded[i].keys.toList()[0].toString() == field) {
-          Map<Question, String> temp2 = {};
           if (!(expanded[i].keys.toList()[0] is NestedQuestion ||
               expanded[i].keys.toList()[0] is PolarQuestion))
             expanded[i].keys.toList()[0].answer.text = doc[field];

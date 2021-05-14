@@ -65,7 +65,7 @@ void main() {
   }
 
   test('Class should load the question structure:', () {
-    final questionManager = DynamicMCQ(questions());
+    final questionManager = QuestionHandler(questions());
     Map<String, dynamic> temp = {};
     questions().forEach((e) {
       if (!(e is NestedQuestion || e is PolarQuestion))

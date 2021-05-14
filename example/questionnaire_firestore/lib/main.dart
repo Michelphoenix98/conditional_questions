@@ -37,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    questionManager = QuestionHandler(questions(), callback: update);
     FirebaseFirestore.instance
         .collection('sample')
         .doc('id_1234')
@@ -46,7 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  DynamicMCQ questionManager = DynamicMCQ(questions());
+  void update() {
+    setState(() {});
+  }
+
+  QuestionHandler questionManager;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            StreamBuilder(
+            /*StreamBuilder(
               stream: questionManager.stream,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -70,20 +75,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   }).toList(),
                 );
               },
+            ),*/
+            Column(
+              children: questionManager.getWidget(context),
             ),
             MaterialButton(
               color: Colors.deepOrange,
               splashColor: Colors.orangeAccent,
               onPressed: () async {
                 //  print("hello");
-                if (!questionManager.validate())
-                  print("Some of the fields are empty");
-                setState(() {
-                  FirebaseFirestore.instance
-                      .collection('sample')
-                      .doc('id_1234')
-                      .set(questionManager.toMap());
-                });
+                if (questionManager.validate())
+                  setState(() {
+                    FirebaseFirestore.instance
+                        .collection('sample')
+                        .doc('id_1234')
+                        .set(questionManager.toMap());
+                  });
               },
               child: Text("Submit"),
             )

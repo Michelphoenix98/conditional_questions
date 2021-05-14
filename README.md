@@ -1,8 +1,10 @@
 # conditional_questions
 
-A dynamic questionnaire/survey handling  package.
-
-
+A package that handles the creation and state of a dynamic questionnaire/survey with conditional questions.
+Have you ever wanted to implement a form/questionnaire/survey like the ones you see on Google forms?
+Have you ever wanted to implement conditional questions that show or hide the questions that follow, based on the user's input?
+All you need to do is frame the questions in a specific way and the package handles the widget creation
+and the state management for you.
 
 
 <img src="https://user-images.githubusercontent.com/40787439/117844127-0f39fc00-b29d-11eb-9bb3-714ba2b58811.gif" alt="Screenrecorder-2021-05-11-20-23-21-153" width="200"/>
@@ -18,7 +20,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-    conditional_questions: '^0.0.1'
+    conditional_questions: '^0.0.4'
 ```
 
 
@@ -180,47 +182,36 @@ The answer list provided to this instance is rendered as a set of Radio buttons.
     ];
   }
 ```
-### Initialize an instance of DynamicMCQ
+### Initialize an instance of QuestionHandler
 This is the main class that manages the state of the questions.
 ```Dart
-  DynamicMCQ questionManager;
+  QuestionHandler questionManager;
   @override
   void initState() {
     super.initState();
-    questionManager = DynamicMCQ(questions());
+    questionManager = QuestionHandler(questions(), callback: update);
+  }
+
+  void update() {
+    setState(() {});
   }
 ```
-### Access the stream and render the widgets
-An instance of the DynamicMCQ class contains a stream that contains the state of the questions.
-The stream provides us with a List of Maps.
-Invoke the getCard() function of the instance of class DynamicMCQ and pass a Map one at a time from the List(snapshot) to the getCard() function
-to render all the questions as widget cards.
-
+### Pass the context to getWidget()
+An instance of the QuestionHandler class contains a getWidget() method that returns a
+list of widgets that represent question cards. Remember, it returns a list of widgets.
 ```Dart
 SingleChildScrollView(
         child: Column(
           children: [
-            StreamBuilder(
-              stream: questionManager.stream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text("Loading..."),
-                  );
-                }
-                return Column(
-                  children: snapshot.data.map<Widget>((data) {
-                    return questionManager.getCard(context, data);
-                  }).toList(),
-                );
-              },
+
+            Column(
+              children: questionManager.getWidget(context),
             ),
             MaterialButton(
               color: Colors.deepOrange,
               splashColor: Colors.orangeAccent,
               onPressed: () async {
-                //  print("hello");
-                if (!questionManager.validate())
+                if (questionManager.validate())
                   print("Some of the fields are empty");
                 setState(() {});
               },
@@ -232,6 +223,26 @@ SingleChildScrollView(
 ```
 ## Full code:
 ```Dart
+import 'package:conditional_questions/conditional_questions.dart';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
@@ -242,11 +253,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DynamicMCQ questionManager;
+  QuestionHandler questionManager;
   @override
   void initState() {
     super.initState();
-    questionManager = DynamicMCQ(questions());
+    questionManager = QuestionHandler(questions(), callback: update);
+  }
+
+  void update() {
+    setState(() {});
   }
 
   @override
@@ -258,27 +273,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            StreamBuilder(
-              stream: questionManager.stream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text("Loading..."),
-                  );
-                }
-                return Column(
-                  children: snapshot.data.map<Widget>((data) {
-                    return questionManager.getCard(context, data);
-                  }).toList(),
-                );
-              },
+            Column(
+              children: questionManager.getWidget(context),
             ),
             MaterialButton(
               color: Colors.deepOrange,
               splashColor: Colors.orangeAccent,
               onPressed: () async {
                 //  print("hello");
-                if (!questionManager.validate())
+                if (questionManager.validate())
                   print("Some of the fields are empty");
                 setState(() {});
               },
@@ -289,67 +292,65 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  List<Question> questions() {
-    return [
-      Question(
-        question: "What is your name?",
-        //isMandatory: true,
-        validate: (field) {
-          if (field.isEmpty) return "Field cannot be empty";
-          return null;
-        },
-      ),
-      PolarQuestion(
-          question: "Have you made any donations in the past?",
-          answers: ["Yes", "No"],
-          isMandatory: true),
-      PolarQuestion(
-          question: "In the last 3 months have you had a vaccination?",
-          answers: ["Yes", "No"]),
-      PolarQuestion(
-          question: "Have you ever taken medication for HIV?",
-          answers: ["Yes", "No"]),
-      NestedQuestion(
-        question: "The series will depend on your answer",
+}
+List<Question> questions() {
+  return [
+    Question(
+      question: "What is your name?",
+      //isMandatory: true,
+      validate: (field) {
+        if (field.isEmpty) return "Field cannot be empty";
+        return null;
+      },
+    ),
+    PolarQuestion(
+        question: "Have you made any donations in the past?",
         answers: ["Yes", "No"],
-        children: {
-          'Yes': [
-            PolarQuestion(
-                question: "Have you ever taken medication for H1n1?",
-                answers: ["Yes", "No"]),
-            PolarQuestion(
-                question: "Have you ever taken medication for Rabies?",
-                answers: ["Yes", "No"]),
-            Question(
-              question: "Comments",
-            ),
-          ],
-          'No': [
-            NestedQuestion(
-                question: "Have you sustained any injuries?",
-                answers: [
-                  "Yes",
-                  "No"
+        isMandatory: true),
+    PolarQuestion(
+        question: "In the last 3 months have you had a vaccination?",
+        answers: ["Yes", "No"]),
+    PolarQuestion(
+        question: "Have you ever taken medication for HIV?",
+        answers: ["Yes", "No"]),
+    NestedQuestion(
+      question: "The series will depend on your answer",
+      answers: ["Yes", "No"],
+      children: {
+        'Yes': [
+          PolarQuestion(
+              question: "Have you ever taken medication for H1n1?",
+              answers: ["Yes", "No"]),
+          PolarQuestion(
+              question: "Have you ever taken medication for Rabies?",
+              answers: ["Yes", "No"]),
+          Question(
+            question: "Comments",
+          ),
+        ],
+        'No': [
+          NestedQuestion(
+              question: "Have you sustained any injuries?",
+              answers: [
+                "Yes",
+                "No"
+              ],
+              children: {
+                'Yes': [
+                  PolarQuestion(
+                      question: "Did it result in a disability?",
+                      answers: ["Yes", "No", "I prefer not to say"]),
                 ],
-                children: {
-                  'Yes': [
-                    PolarQuestion(
-                        question: "Did it result in a disability?",
-                        answers: ["Yes", "No", "I prefer not to say"]),
-                  ],
-                  'No': [
-                    PolarQuestion(
-                        question:
-                            "Have you ever been infected with chicken pox?",
-                        answers: ["Yes", "No"]),
-                  ]
-                }),
-          ],
-        },
-      )
-    ];
-  }
+                'No': [
+                  PolarQuestion(
+                      question: "Have you ever been infected with chicken pox?",
+                      answers: ["Yes", "No"]),
+                ]
+              }),
+        ],
+      },
+    )
+  ];
 }
 ```
 

@@ -29,7 +29,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DynamicMCQ questionManager = DynamicMCQ(questions());
+  QuestionHandler questionManager;
+  @override
+  void initState() {
+    super.initState();
+    questionManager = QuestionHandler(questions(), callback: update);
+  }
+
+  void update() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,27 +49,15 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            StreamBuilder(
-              stream: questionManager.stream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text("Loading..."),
-                  );
-                }
-                return Column(
-                  children: snapshot.data.map<Widget>((data) {
-                    return questionManager.getCard(context, data);
-                  }).toList(),
-                );
-              },
+            Column(
+              children: questionManager.getWidget(context),
             ),
             MaterialButton(
               color: Colors.deepOrange,
               splashColor: Colors.orangeAccent,
               onPressed: () async {
                 //  print("hello");
-                if (!questionManager.validate())
+                if (questionManager.validate())
                   print("Some of the fields are empty");
                 setState(() {});
               },

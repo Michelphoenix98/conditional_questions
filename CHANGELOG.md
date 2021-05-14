@@ -9,3 +9,8 @@
 ## [0.0.3] - 2021-12-05
 
 * Removed unused code to pass static analysis.
+
+## [0.0.4] - 2021-13-05
+
+* Bug fixes, optimizations and added functionality.
+

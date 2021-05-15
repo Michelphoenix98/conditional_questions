@@ -1,4 +1,6 @@
 # conditional_questions
+[![Pub Version](https://img.shields.io/pub/v/conditional_questions.svg?style=flat-square)](https://pub.dev/packages/conditional_questions)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 A package that handles the creation and state of a dynamic questionnaire/survey with conditional questions.
 Have you ever wanted to implement a form/questionnaire/survey like the ones you see on Google forms?
@@ -20,7 +22,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-    conditional_questions: '^1.0.0'
+    conditional_questions: '^1.0.1'
 ```
 
 

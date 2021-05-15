@@ -14,3 +14,7 @@
 
 * Bug fixes, optimizations, functionality and added support for Null Safety.
 
+## [1.0.1] - 2021-15-05
+
+* Removed unused code to pass static analysis.
+

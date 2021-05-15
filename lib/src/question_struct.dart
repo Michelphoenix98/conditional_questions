@@ -9,8 +9,7 @@ import 'package:conditional_questions/conditional_questions.dart';
 /// The [validate] parameter accepts a function to perform validation on the
 /// answer provided to the question.
 class Question {
-  Question({required String this.question, this.parent, this.validate})
-      : assert(question != null);
+  Question({required String this.question, this.parent, this.validate});
 
   final String? question;
   late TextEditingController answer;
@@ -22,7 +21,6 @@ class Question {
 
   @override
   String toString() {
-    // TODO: implement toString
     return question!;
   }
 }
@@ -44,9 +42,7 @@ class PolarQuestion extends Question {
       this.parent,
       this.isMandatory = false,
       this.isCheckBox = false})
-      : assert(question != null),
-        assert(answers != null),
-        super(
+      : super(
           question: question,
           parent: parent,
         );

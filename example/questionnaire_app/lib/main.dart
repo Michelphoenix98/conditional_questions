@@ -57,9 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
               splashColor: Colors.orangeAccent,
               onPressed: () async {
                 //  print("hello");
-                if (questionManager.validate())
-                  print("Some of the fields are empty");
-                setState(() {});
+                if (questionManager.validate()) setState(() {});
               },
               child: Text("Submit"),
             )

@@ -11,7 +11,7 @@ class QuestionHandler {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> temp = new Map<String, dynamic>();
     expanded.forEach((element) {
-      String answer = (!(element.keys.toList()[0] is NestedQuestion ||
+      String? answer = (!(element.keys.toList()[0] is NestedQuestion ||
               element.keys.toList()[0] is PolarQuestion))
           ? element.keys.toList()[0].answer.text
           : element[element.keys.toList()[0]];
@@ -23,7 +23,7 @@ class QuestionHandler {
   List<FormElement> getElementList() {
     List<FormElement> temp = [];
     expanded.forEach((element) {
-      String answer = (!(element.keys.toList()[0] is NestedQuestion ||
+      String? answer = (!(element.keys.toList()[0] is NestedQuestion ||
               element.keys.toList()[0] is PolarQuestion))
           ? element.keys.toList()[0].answer.text
           : element[element.keys.toList()[0]];
@@ -64,7 +64,7 @@ class QuestionHandler {
   void resetState() {
     expanded.clear();
     expanded = _questionStructure.map((e) {
-      Map<Question, String> temp = new Map<Question, String>();
+      Map<Question, String?> temp = new Map<Question, String?>();
       if (!(e is NestedQuestion || e is PolarQuestion))
         e.answer = new TextEditingController();
       temp[e] = null;
@@ -77,11 +77,11 @@ class QuestionHandler {
 
 //  final _stream = StreamController<List<Map<Question, String>>>();
   List<Question> _questionStructure;
-  List<Map<Question, String>> expanded;
+  late List<Map<Question, String?>> expanded;
   final callback;
   QuestionHandler(this._questionStructure, {this.callback}) {
     expanded = _questionStructure.map((e) {
-      Map<Question, String> temp = new Map<Question, String>();
+      Map<Question, String?> temp = new Map<Question, String?>();
       if (!(e is NestedQuestion || e is PolarQuestion))
         e.answer = new TextEditingController();
       temp[e] = null;
@@ -101,7 +101,7 @@ class QuestionHandler {
   ///its children will be expanded or unpacked based on the [answer].
   ///The parameter [questionState] contains the old state of the question.
   ///The [answer] parameter contains the new answer selected by the user.
-  void _onEvent(Map<Question, String> questionState, String answer) {
+  void _onEvent(Map<Question, String?> questionState, String? answer) {
     int location = 0;
     if ((location = expanded.indexOf(questionState)) != -1) {
       expanded[location][questionState.keys.toList()[0]] = answer;
@@ -114,7 +114,7 @@ class QuestionHandler {
                 null &&
             questionState[questionState.keys.toList()[0]] != null) {
           (questionState.keys.toList()[0] as NestedQuestion)
-              .children
+              .children!
               .forEach((key, value) {
             if (key != answer) {
               int count =
@@ -126,7 +126,7 @@ class QuestionHandler {
                         expanded[count]
                             .keys
                             .toList()[0]
-                            .parent
+                            .parent!
                             .containsKey(questionState.keys.toList()[0])) {
                   expanded.removeAt(count);
                 }
@@ -138,18 +138,18 @@ class QuestionHandler {
                 expanded[location + 1]
                     .keys
                     .toList()[0]
-                    .parent
+                    .parent!
                     .containsKey(questionState.keys.toList()[0])) {
               expanded.removeAt(location + 1);
             }
           }
           (questionState.keys.toList()[0] as NestedQuestion)
-              .children
+              .children!
               .forEach((key, value) {
             if (key == answer) {
               int count = location + 1;
               value.forEach((element) {
-                Map<Question, String> temp = new Map<Question, String>();
+                Map<Question, String?> temp = new Map<Question, String?>();
                 element.parent =
                     expanded[location].keys.toList()[0].parent == null
                         ? expanded[location]
@@ -305,7 +305,7 @@ class QuestionHandler {
                                           controller:
                                               data.keys.toList()[0].answer,
                                           onChanged: (string) {
-                                            this._onEvent(data, string);
+                                            this._onEvent(data as Map<Question, String?>, string);
                                           },
                                         ),
                                       ),
@@ -384,7 +384,7 @@ class CustomRadioButton extends StatelessWidget {
         Radio(
           value: answer,
           groupValue: data[data.keys.toList()[0]],
-          onChanged: (value) {
+          onChanged: (dynamic value) {
             print(value);
             FocusScopeNode currentFocus = FocusScope.of(context);
 

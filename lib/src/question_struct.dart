@@ -9,21 +9,21 @@ import 'package:conditional_questions/conditional_questions.dart';
 /// The [validate] parameter accepts a function to perform validation on the
 /// answer provided to the question.
 class Question {
-  Question({this.question, this.parent, this.validate})
+  Question({required String this.question, this.parent, this.validate})
       : assert(question != null);
 
-  final String question;
-  TextEditingController answer;
-  Map<Question, String> parent;
+  final String? question;
+  late TextEditingController answer;
+  Map<Question, String?>? parent;
   //bool isMandatory;
   final validate;
   bool hasError = false;
-  String errorMessage;
+  String? errorMessage;
 
   @override
   String toString() {
     // TODO: implement toString
-    return question;
+    return question!;
   }
 }
 
@@ -39,8 +39,8 @@ class Question {
 ///
 class PolarQuestion extends Question {
   PolarQuestion(
-      {this.question,
-      this.answers = const ["Yes", "No"],
+      {required String this.question,
+      List<String> this.answers = const ["Yes", "No"],
       this.parent,
       this.isMandatory = false,
       this.isCheckBox = false})
@@ -50,9 +50,9 @@ class PolarQuestion extends Question {
           question: question,
           parent: parent,
         );
-  final List<String> answers;
-  final question;
-  Map<Question, String> parent;
+  final List<String>? answers;
+  final String? question;
+  Map<Question, String?>? parent;
   final isMandatory;
   final isCheckBox;
   bool hasError = false;
@@ -74,7 +74,7 @@ class PolarQuestion extends Question {
 ///The [children] property can also contain instances of [NestedQuestion].
 class NestedQuestion extends PolarQuestion {
   NestedQuestion(
-      {question,
+      {required question,
       answers = const ["Yes", "No"],
       children,
       parent,
@@ -86,12 +86,12 @@ class NestedQuestion extends PolarQuestion {
     this.parent = parent;
     this.isMandatory = isMandatory;
   }
-  String question;
-  List<String> answers;
-  Map<String, List<Question>> children;
+  String? question;
+  List<String>? answers;
+  Map<String, List<Question>>? children;
 
-  Map<Question, String> parent;
-  bool isMandatory;
+  Map<Question, String?>? parent;
+  bool? isMandatory;
   bool hasError = false;
 }
 

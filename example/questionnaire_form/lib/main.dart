@@ -58,7 +58,6 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 //  print("hello");
                 if (questionManager.validate()) {
-                  print("Some of the fields are empty");
                   showDialog(
                       context: context,
                       builder: (context) {
@@ -82,7 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       .map<Widget>((element) {
                                     return Row(children: [
                                       Text("${element.question}:"),
-                                      Text(element.answer)
+                                      Text(element.answer == null
+                                          ? "null"
+                                          : element.answer)
                                     ]);
                                   }).toList(),
                                 ),

@@ -2,6 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:conditional_questions/conditional_questions.dart';
 
+void update() {
+  print("updated.");
+}
+
 void main() {
   List<Question> questions() {
     return [
@@ -65,7 +69,7 @@ void main() {
   }
 
   test('Class should load the question structure:', () {
-    final questionManager = QuestionHandler(questions());
+    final questionManager = QuestionHandler(questions(), callback: update);
     Map<String, dynamic> temp = {};
     questions().forEach((e) {
       if (!(e is NestedQuestion || e is PolarQuestion))

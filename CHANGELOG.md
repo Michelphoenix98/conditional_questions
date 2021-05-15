@@ -10,7 +10,7 @@
 
 * Removed unused code to pass static analysis.
 
-## [0.0.4] - 2021-13-05
+## [1.0.0] - 2021-15-05
 
 * Bug fixes, optimizations, functionality and added support for Null Safety.
 

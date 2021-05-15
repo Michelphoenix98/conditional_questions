@@ -18,3 +18,7 @@
 
 * Removed unused code to pass static analysis.
 
+## [1.0.2] - 2021-15-05
+
+* Fixed typos.
+

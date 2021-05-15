@@ -26,3 +26,7 @@
 
 * Removed unused files.
 
+## [1.0.4] - 2021-15-05
+
+* Reformatted code to pass static analysis.
+

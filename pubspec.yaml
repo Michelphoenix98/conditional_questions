@@ -1,6 +1,6 @@
 name: conditional_questions
 description: A package that handles the creation and state of a dynamic questionnaire/survey with conditional questions.
-version: 1.0.3
+version: 1.0.4
 author: Michel Thomas<michelphoenix98@gmail.com>
 homepage: https://github.com/Michelphoenix98/conditional_questions
 

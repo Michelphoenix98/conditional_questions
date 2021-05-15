@@ -305,7 +305,9 @@ class QuestionHandler {
                                           controller:
                                               data.keys.toList()[0].answer,
                                           onChanged: (string) {
-                                            this._onEvent(data as Map<Question, String?>, string);
+                                            this._onEvent(
+                                                data as Map<Question, String?>,
+                                                string);
                                           },
                                         ),
                                       ),

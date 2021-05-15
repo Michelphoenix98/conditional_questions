@@ -22,3 +22,7 @@
 
 * Fixed typos.
 
+## [1.0.3] - 2021-15-05
+
+* Removed unused files.
+

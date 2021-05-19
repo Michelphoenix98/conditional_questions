@@ -123,14 +123,12 @@ class QuestionHandler {
                 if (count < expanded.length &&
                         expanded[count].containsKey(element) ||
                     count < expanded.length &&
-                        ( expanded[count]
-                            .keys
-                            .toList()[0]
-                            .parent!=null && expanded[count]
+                        expanded[count].keys.toList()[0].parent != null &&
+                        expanded[count]
                             .keys
                             .toList()[0]
                             .parent!
-                            .containsKey(questionState.keys.toList()[0]))) {
+                            .containsKey(questionState.keys.toList()[0])) {
                   expanded.removeAt(count);
                 }
               });
@@ -138,14 +136,12 @@ class QuestionHandler {
           });
           for (int i = location + 1; i < expanded.length; i++) {
             if (location + 1 < expanded.length &&
-              (expanded[location + 1]
-                  .keys
-                  .toList()[0]
-                  .parent!=null && expanded[location + 1]
+                expanded[location + 1].keys.toList()[0].parent != null &&
+                expanded[location + 1]
                     .keys
                     .toList()[0]
                     .parent!
-                    .containsKey(questionState.keys.toList()[0]))) {
+                    .containsKey(questionState.keys.toList()[0])) {
               expanded.removeAt(location + 1);
             }
           }

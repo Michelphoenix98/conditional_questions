@@ -34,3 +34,7 @@
 
 * Major bug fixes.
 
+## [1.0.6] - 2021-19-05
+
+* Reformatted code to pass static analysis.
+

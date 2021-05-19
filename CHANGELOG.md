@@ -30,3 +30,7 @@
 
 * Reformatted code to pass static analysis.
 
+## [1.0.5] - 2021-19-05
+
+* Major bug fixes.
+

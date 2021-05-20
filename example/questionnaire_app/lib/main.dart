@@ -56,7 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.deepOrange,
               splashColor: Colors.orangeAccent,
               onPressed: () async {
-                //  print("hello");
                 if (questionManager.validate()) setState(() {});
               },
               child: Text("Submit"),

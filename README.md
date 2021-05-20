@@ -23,7 +23,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-    conditional_questions: '^1.0.6'
+    conditional_questions: '^1.0.7'
 ```
 
 

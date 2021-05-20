@@ -79,4 +79,60 @@ void main() {
     });
     expect(questionManager.toMap(), temp);
   });
+
+  test('setState should replace current state:', () {
+    final questionManager = QuestionHandler(questions(), callback: update);
+    Map<String, dynamic> temp = {
+      "What is your name?": "mike",
+      "Have you made any donations in the past?": "No",
+      "In the last 3 months have you had a vaccination?": "No",
+      "Have you ever taken medication for HIV?": "No",
+      "The series will depend on your answer": "No",
+      "Have you sustained any injuries?": "Yes",
+      "Did it result in a disability?": "No"
+    };
+    questionManager.setState(temp);
+    expect(questionManager.toMap(), temp);
+  });
+
+  test('ResetState should produce default state:', () {
+    final questionManager = QuestionHandler(questions(), callback: update);
+    Map<String, dynamic> temp = {
+      "What is your name?": "mike",
+      "Have you made any donations in the past?": "No",
+      "In the last 3 months have you had a vaccination?": "No",
+      "Have you ever taken medication for HIV?": "No",
+      "The series will depend on your answer": "No",
+      "Have you sustained any injuries?": "Yes",
+      "Did it result in a disability?": "No"
+    };
+    questionManager.setState(temp);
+    expect(questionManager.toMap(), temp);
+    questionManager.resetState();
+    expect(questionManager.toMap(), {
+      "What is your name?": "",
+      "Have you made any donations in the past?": null,
+      "In the last 3 months have you had a vaccination?": null,
+      "Have you ever taken medication for HIV?": null,
+      "The series will depend on your answer": null
+    });
+  });
+
+  test('validation test:', () {
+    final questionManager = QuestionHandler(questions(), callback: update);
+    Map<String, dynamic> temp = {
+      "What is your name?": "mike",
+      "Have you made any donations in the past?": "No",
+      "In the last 3 months have you had a vaccination?": "No",
+      "Have you ever taken medication for HIV?": "No",
+      "The series will depend on your answer": "No",
+      "Have you sustained any injuries?": "Yes",
+      "Did it result in a disability?": "No"
+    };
+    questionManager.setState(temp);
+    expect(questionManager.toMap(), temp);
+    expect(questionManager.validate(), true);
+    questionManager.resetState();
+    expect(questionManager.validate(), false);
+  });
 }

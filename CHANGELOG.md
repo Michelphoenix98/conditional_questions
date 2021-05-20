@@ -38,3 +38,7 @@
 
 * Reformatted code to pass static analysis.
 
+## [1.0.7] - 2021-20-05
+
+* Added tests.
+

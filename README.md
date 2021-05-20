@@ -2,6 +2,7 @@
 [![Pub Version](https://img.shields.io/pub/v/conditional_questions.svg?style=flat-square)](https://pub.dev/packages/conditional_questions)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 [![Codemagic build status](https://api.codemagic.io/apps/60a577211b2a304fc2cd4562/60a577211b2a304fc2cd4561/status_badge.svg)](https://codemagic.io/apps/60a577211b2a304fc2cd4562/60a577211b2a304fc2cd4561/latest_build)
+[![Coverage Status](https://coveralls.io/repos/github/Michelphoenix98/conditional_questions/badge.svg?branch=master)](https://coveralls.io/github/Michelphoenix98/conditional_questions?branch=master)
 
 A package that handles the creation and state of a dynamic questionnaire/survey with conditional questions.
 Have you ever wanted to implement a form/questionnaire/survey like the ones you see on Google forms?
@@ -23,7 +24,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-    conditional_questions: '^1.0.7'
+    conditional_questions: '^1.0.8'
 ```
 
 

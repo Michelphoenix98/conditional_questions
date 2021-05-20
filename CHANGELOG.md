@@ -42,3 +42,7 @@
 
 * Added tests.
 
+## [1.0.8] - 2021-20-05
+
+* Updated readme.
+

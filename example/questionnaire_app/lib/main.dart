@@ -1,6 +1,6 @@
 import 'package:conditional_questions/conditional_questions.dart';
 import 'package:flutter/material.dart';
-import 'resource.dart';
+import 'package:questionnaire_app/resource.dart';
 
 void main() {
   runApp(MyApp());

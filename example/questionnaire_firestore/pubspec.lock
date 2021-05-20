@@ -67,10 +67,10 @@ packages:
   conditional_questions:
     dependency: "direct main"
     description:
-      path: "C:/Users/miche/AndroidStudioProjects/conditional_questions"
-      relative: false
-    source: path
-    version: "1.0.5"
+      name: conditional_questions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.6"
   cupertino_icons:
     dependency: "direct main"
     description:

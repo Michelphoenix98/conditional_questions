@@ -23,8 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  conditional_questions:
-    path: C:/Users/miche/AndroidStudioProjects/conditional_questions
+  conditional_questions: ^1.0.6
   firebase_core: ^1.1.0
   firebase_auth: ^1.1.2
   cloud_firestore: ^1.0.7

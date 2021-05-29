@@ -6,7 +6,6 @@ import 'package:questionnaire_firestore/resource.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -34,68 +33,50 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _key = GlobalKey<QuestionFormState>();
+  late final _firestream;
   @override
   void initState() {
     super.initState();
-    questionManager = QuestionHandler(questions(), callback: update);
-    FirebaseFirestore.instance
-        .collection('sample')
-        .doc('id_1234')
-        .get()
-        .then((value) {
-      if (value.exists) questionManager.setState(value.data()!);
-    });
+    _firestream =
+        FirebaseFirestore.instance.collection('sample').doc('id_1234').get();
   }
 
-  void update() {
-    setState(() {});
-  }
-
-  late QuestionHandler questionManager;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title!),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            /*StreamBuilder(
-              stream: questionManager.stream,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: Text("Loading..."),
-                  );
-                }
-                return Column(
-                  children: snapshot.data.map<Widget>((data) {
-                    return questionManager.getCard(context, data);
-                  }).toList(),
-                );
-              },
-            ),*/
-            Column(
-              children: questionManager.getWidget(context),
-            ),
-            MaterialButton(
-              color: Colors.deepOrange,
-              splashColor: Colors.orangeAccent,
-              onPressed: () async {
-                //  print("hello");
-                if (questionManager.validate())
-                  setState(() {
+      body: FutureBuilder<DocumentSnapshot>(
+        future: _firestream,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(child: CircularProgressIndicator());
+
+          return ConditionalQuestions(
+            key: _key,
+            children: questions(),
+            value: snapshot.data!.data(),
+            trailing: [
+              MaterialButton(
+                color: Colors.deepOrange,
+                splashColor: Colors.orangeAccent,
+                onPressed: () async {
+                  if (_key.currentState!.validate()) {
+                    print("validated!");
                     FirebaseFirestore.instance
                         .collection('sample')
                         .doc('id_1234')
-                        .set(questionManager.toMap());
-                  });
-              },
-              child: Text("Submit"),
-            )
-          ],
-        ),
+                        .set(_key.currentState!.toMap());
+                  }
+                },
+                child: Text("Submit"),
+              )
+            ],
+            leading: [Text("TITLE")],
+          );
+        },
       ),
     );
   }

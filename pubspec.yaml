@@ -1,6 +1,6 @@
 name: conditional_questions
 description: A package that handles the creation and state of a dynamic questionnaire/survey with conditional questions.
-version: 1.0.8
+version: 2.0.0
 author: Michel Thomas<michelphoenix98@gmail.com>
 homepage: https://github.com/Michelphoenix98/conditional_questions
 
@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  provider: ^5.0.0
 
 dev_dependencies:
   flutter_test:

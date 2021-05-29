@@ -91,6 +91,8 @@ class NestedQuestion extends PolarQuestion {
   bool hasError = false;
 }
 
+///A model that neatly hold a question and its corresponding answer.
+///can be used by other widgets to display the question and answer.
 class FormElement {
   FormElement({this.question, this.answer});
   final question;

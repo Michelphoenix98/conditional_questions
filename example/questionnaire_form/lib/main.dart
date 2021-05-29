@@ -29,15 +29,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late QuestionHandler questionManager;
+  final _key = GlobalKey<QuestionFormState>();
   @override
   void initState() {
     super.initState();
-    questionManager = QuestionHandler(questions(), callback: update);
-  }
-
-  void update() {
-    setState(() {});
   }
 
   @override
@@ -46,7 +41,52 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title!),
       ),
-      body: SingleChildScrollView(
+      body: ConditionalQuestions(
+        key: _key,
+        children: questions(),
+        trailing: [
+          MaterialButton(
+            color: Colors.deepOrange,
+            splashColor: Colors.orangeAccent,
+            onPressed: () async {
+              if (_key.currentState!.validate()) {
+                print("validated!");
+                await (Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                      builder: (_) => Scaffold(
+                            appBar: AppBar(
+                              leading: BackButton(color: Colors.black),
+                            ),
+                            body: SingleChildScrollView(
+                              child: Container(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: _key.currentState!
+                                        .getElementList()
+                                        .map<Widget>((element) {
+                                      return Row(children: [
+                                        Text("${element.question}:"),
+                                        Text(element.answer == null
+                                            ? "null"
+                                            : element.answer)
+                                      ]);
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )),
+                ));
+              }
+            },
+            child: Text("Submit"),
+          )
+        ],
+        leading: [Text("TITLE")],
+      ), /*SingleChildScrollView(
         child: Column(
           children: [
             Column(
@@ -56,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.deepOrange,
               splashColor: Colors.orangeAccent,
               onPressed: () async {
-                //  print("hello");
+
                 if (questionManager.validate()) {
                   showDialog(
                       context: context,
@@ -69,27 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 },
                                 child: Text("Ok"))
                           ],
-                          content: SingleChildScrollView(
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: questionManager
-                                      .getElementList()
-                                      .map<Widget>((element) {
-                                    return Row(children: [
-                                      Text("${element.question}:"),
-                                      Text(element.answer == null
-                                          ? "null"
-                                          : element.answer)
-                                    ]);
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ),
+                          content:
                         );
                       });
                 }
@@ -98,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           ],
         ),
-      ),
+      ),*/
     );
   }
 }

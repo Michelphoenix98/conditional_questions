@@ -29,16 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late QuestionHandler questionManager;
-  @override
-  void initState() {
-    super.initState();
-    questionManager = QuestionHandler(questions(), callback: update);
-  }
-
-  void update() {
-    setState(() {});
-  }
+  final _key = GlobalKey<QuestionFormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,22 +37,22 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title!),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              children: questionManager.getWidget(context),
-            ),
-            MaterialButton(
-              color: Colors.deepOrange,
-              splashColor: Colors.orangeAccent,
-              onPressed: () async {
-                if (questionManager.validate()) setState(() {});
-              },
-              child: Text("Submit"),
-            )
-          ],
-        ),
+      body: ConditionalQuestions(
+        key: _key,
+        children: questions(),
+        trailing: [
+          MaterialButton(
+            color: Colors.deepOrange,
+            splashColor: Colors.orangeAccent,
+            onPressed: () async {
+              if (_key.currentState!.validate()) {
+                print("validated!");
+              }
+            },
+            child: Text("Submit"),
+          )
+        ],
+        leading: [Text("TITLE")],
       ),
     );
   }

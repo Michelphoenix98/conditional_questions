@@ -69,7 +69,7 @@ void main() {
   }
 
   test('Class should load the question structure:', () {
-    final questionManager = QuestionHandler(questions(), callback: update);
+    final questionManager = QuestionProvider(questions());
     Map<String, dynamic> temp = {};
     questions().forEach((e) {
       if (!(e is NestedQuestion || e is PolarQuestion))
@@ -81,7 +81,7 @@ void main() {
   });
 
   test('setState should replace current state:', () {
-    final questionManager = QuestionHandler(questions(), callback: update);
+    final questionManager = QuestionProvider(questions());
     Map<String, dynamic> temp = {
       "What is your name?": "mike",
       "Have you made any donations in the past?": "No",
@@ -96,7 +96,7 @@ void main() {
   });
 
   test('ResetState should produce default state:', () {
-    final questionManager = QuestionHandler(questions(), callback: update);
+    final questionManager = QuestionProvider(questions());
     Map<String, dynamic> temp = {
       "What is your name?": "mike",
       "Have you made any donations in the past?": "No",
@@ -119,7 +119,7 @@ void main() {
   });
 
   test('validation test:', () {
-    final questionManager = QuestionHandler(questions(), callback: update);
+    final questionManager = QuestionProvider(questions());
     Map<String, dynamic> temp = {
       "What is your name?": "mike",
       "Have you made any donations in the past?": "No",

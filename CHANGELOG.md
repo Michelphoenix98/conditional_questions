@@ -46,3 +46,8 @@
 
 * Updated readme.
 
+## [2.0.0] - 2021-29-05
+
+* Major revision of interface and additional functionality.
+
+

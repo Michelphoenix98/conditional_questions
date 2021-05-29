@@ -23,7 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  conditional_questions: ^1.0.6
+  conditional_questions:
+    git:
+      url: git://github.com/Michelphoenix98/conditional_questions
+      ref: master
   firebase_core: ^1.1.0
   firebase_auth: ^1.1.2
   cloud_firestore: ^1.0.7

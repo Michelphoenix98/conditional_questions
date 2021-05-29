@@ -24,7 +24,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-    conditional_questions: '^1.0.8'
+    conditional_questions: '^2.0.0'
 ```
 
 
@@ -186,49 +186,33 @@ The answer list provided to this instance is rendered as a set of Radio buttons.
     ];
   }
 ```
-### Initialize an instance of QuestionHandler
-This is the main class that manages the state of the questions.
+### Pass the list of questions to the ConditionalQuestions Widget.
+This is the main widget that handles the form.
 ```Dart
-  QuestionHandler questionManager;
-  @override
-  void initState() {
-    super.initState();
-    questionManager = QuestionHandler(questions(), callback: update);
-  }
-
-  void update() {
-    setState(() {});
-  }
-```
-### Pass the context to getWidget()
-An instance of the QuestionHandler class contains a getWidget() method that returns a
-list of widgets that represent question cards. Remember, it returns a list of widgets.
-```Dart
-SingleChildScrollView(
-        child: Column(
-          children: [
-
-            Column(
-              children: questionManager.getWidget(context),
-            ),
-            MaterialButton(
-              color: Colors.deepOrange,
-              splashColor: Colors.orangeAccent,
-              onPressed: () async {
-                if (questionManager.validate())
-                  print("Some of the fields are empty");
-                setState(() {});
-              },
-              child: Text("Submit"),
-            )
-          ],
-        ),
+ConditionalQuestions(
+        key: _key,
+        children: questions(),
+        trailing: [
+          MaterialButton(
+            color: Colors.deepOrange,
+            splashColor: Colors.orangeAccent,
+            onPressed: () async {
+              if (_key.currentState!.validate()) {
+                print("validated!");
+              }
+            },
+            child: Text("Submit"),
+          )
+        ],
+        leading: [Text("TITLE")],
       ),
 ```
+
 ## Full code:
 ```Dart
 import 'package:conditional_questions/conditional_questions.dart';
 import 'package:flutter/material.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -248,51 +232,39 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  QuestionHandler questionManager;
-  @override
-  void initState() {
-    super.initState();
-    questionManager = QuestionHandler(questions(), callback: update);
-  }
-
-  void update() {
-    setState(() {});
-  }
+  final _key = GlobalKey<QuestionFormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
-              children: questionManager.getWidget(context),
-            ),
-            MaterialButton(
-              color: Colors.deepOrange,
-              splashColor: Colors.orangeAccent,
-              onPressed: () async {
-                //  print("hello");
-                if (questionManager.validate())
-                  print("Some of the fields are empty");
-                setState(() {});
-              },
-              child: Text("Submit"),
-            )
-          ],
-        ),
+      body: ConditionalQuestions(
+        key: _key,
+        children: questions(),
+        trailing: [
+          MaterialButton(
+            color: Colors.deepOrange,
+            splashColor: Colors.orangeAccent,
+            onPressed: () async {
+              if (_key.currentState!.validate()) {
+                print("validated!");
+              }
+            },
+            child: Text("Submit"),
+          )
+        ],
+        leading: [Text("TITLE")],
       ),
     );
   }
@@ -358,8 +330,6 @@ List<Question> questions() {
 }
 ```
 
-## Support
-This happens to be my very first dart package that's been published,
-your support would really cheer me up and help me become a better developer.
+## About me
 
-<a href="https://www.buymeacoffee.com/michelthomas98" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+Visit my LinkedIn at https://www.linkedin.com/in/michel98
